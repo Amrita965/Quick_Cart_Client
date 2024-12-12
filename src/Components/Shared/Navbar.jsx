@@ -189,7 +189,7 @@ const Navbar = () => {
                       </Link>
                     </li>
                     <li>
-                      <Link>Dashborad</Link>
+                      <Link to="/dashboard/status">Dashborad</Link>
                     </li>
                     <li>
                       <button onClick={handleLogout}>Logout</button>

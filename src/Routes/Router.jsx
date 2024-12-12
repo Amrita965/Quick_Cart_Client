@@ -4,6 +4,7 @@ import Home from "../Pages/Home/Home";
 import Login from "../Pages/Login/Login";
 import UserDashboardLayout from "../Layouts/UserDashboardLayout";
 import DashboardStatus from "../Pages/UserDashboard/DashboardStatus";
+import Customer from "../Pages/UserDashboard/Customer/Customer";
 
 const router = createBrowserRouter([
     {
@@ -25,8 +26,12 @@ const router = createBrowserRouter([
         element: <UserDashboardLayout />,
         children: [
             {
-                path: "/dashboard",
+                path: "/dashboard/status",
                 element: <DashboardStatus />
+            },
+            {
+                path: "/dashboard/customer",
+                element: <Customer />
             }
         ]
     }

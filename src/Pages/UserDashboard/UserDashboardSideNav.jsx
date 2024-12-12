@@ -4,7 +4,7 @@ const UserDashboardSideNav = () => {
   return (
     <div className="drawer lg:drawer-open">
       <input id="user-dashboard-sidenav" type="checkbox" className="drawer-toggle" />
-      <div className="drawer-content">
+      <div className="drawer-content bg-gray-100">
         <Outlet />
       </div>
       <div className="drawer-side shadow-md">
@@ -17,7 +17,7 @@ const UserDashboardSideNav = () => {
           {/* Sidebar content here */}
           <li>
             <NavLink
-              to="/dashboard"
+              to="/dashboard/status"
               className={({ isActive }) =>
                 isActive
                   ? "rounded-none bg-gradient-to-r from-fuchsia-600 to-purple-600 text-white px-5 py-4 border-l-4 border-slate-500"
@@ -30,7 +30,7 @@ const UserDashboardSideNav = () => {
           </li>
           <li>
             <NavLink
-              to="/customer"
+              to="/dashboard/customer"
               className={({ isActive }) =>
                 isActive
                   ? "rounded-none bg-gradient-to-r from-fuchsia-600 to-purple-600 text-white px-5 py-4 border-l-4 border-slate-500"

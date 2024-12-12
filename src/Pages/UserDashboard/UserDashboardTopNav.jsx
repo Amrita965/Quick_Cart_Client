@@ -52,85 +52,78 @@ const UserDashboardTopNav = () => {
           />
         </div> */}
         <div className="navbar-end">
-            {!user?.emailVerified ? (
-              <label
-                htmlFor="user-authentication-drawer"
-                className="btn bg-gradient-to-r from-fuchsia-600 to-pink-600 text-white"
+          {user?.uid && (
+            <div className="dropdown dropdown-end rounded-none">
+              <div
+                tabIndex={0}
+                role="button"
+                className="btn btn-ghost btn-circle avatar"
               >
-                START SALE
-              </label>
-            ) : (
-              <div className="dropdown dropdown-end rounded-none">
-                <div
-                  tabIndex={0}
-                  role="button"
-                  className="btn btn-ghost btn-circle avatar"
-                >
-                  {user?.photoURL ? (
-                    <div className="w-10 rounded-full">
-                      <img
-                        alt="Tailwind CSS Navbar component"
-                        src={user?.photoURL}
-                      />
-                    </div>
-                  ) : (
-                    <div className="avatar placeholder mr">
-                      <div className="bg-neutral text-neutral-content w-11 rounded-full">
-                        <span className="text-lg">
-                          {user?.displayName?.at(0)}
-                        </span>
-                      </div>
-                    </div>
-                  )}
-                </div>
-                <div
-                  tabIndex={0}
-                  className="menu menu-sm dropdown-content bg-base-100 z-[1] mt-3 w-80 p-2 shadow-lg rounded-md"
-                >
-                  <div className="flex flex-row items-center gap-3 p-2">
-                    <div>
-                      {user?.photoURL ? (
-                        <div className="w-10 rounded-full">
-                          <img
-                            alt="Tailwind CSS Navbar component"
-                            src={user?.photoURL}
-                          />
-                        </div>
-                      ) : (
-                        <div className="avatar placeholder mr hover:bg-inherit">
-                          <div className="bg-neutral text-neutral-content w-11 rounded-full">
-                            <span className="text-lg">
-                              {user?.displayName?.at(0)}
-                            </span>
-                          </div>
-                        </div>
-                      )}
-                    </div>
-                    <div className="flex flex-col items-start gap-0">
-                      <h4 className="font-semibold text-base">
-                        {user?.displayName}
-                      </h4>
-                      <p className="block">{user.email}</p>
+                {user?.photoURL ? (
+                  <div className="w-10 rounded-full">
+                    <img
+                      alt="Tailwind CSS Navbar component"
+                      src={user?.photoURL}
+                    />
+                  </div>
+                ) : (
+                  <div className="avatar placeholder mr">
+                    <div className="bg-neutral text-neutral-content w-11 rounded-full">
+                      <span className="text-lg">
+                        {user?.displayName?.at(0)}
+                      </span>
                     </div>
                   </div>
-                  <ul className="mt-3">
-                    <li>
-                      <Link className="justify-between">
-                        Profile
-                        <span className="badge bg-success text-white">New</span>
-                      </Link>
-                    </li>
-                    <li>
-                      <Link>Dashborad</Link>
-                    </li>
-                    <li>
-                      <button >Logout</button>
-                    </li>
-                  </ul>
-                </div>
+                )}
               </div>
-            )}
-          </div>
+              <div
+                tabIndex={0}
+                className="menu menu-sm dropdown-content bg-base-100 z-[1] mt-3 w-80 p-2 shadow-lg rounded-md"
+              >
+                <div className="flex flex-row items-center gap-3 p-2">
+                  <div>
+                    {user?.photoURL ? (
+                      <div className="w-10 rounded-full">
+                        <img
+                          alt="Tailwind CSS Navbar component"
+                          src={user?.photoURL}
+                        />
+                      </div>
+                    ) : (
+                      <div className="avatar placeholder mr hover:bg-inherit">
+                        <div className="bg-neutral text-neutral-content w-11 rounded-full">
+                          <span className="text-lg">
+                            {user?.displayName?.at(0)}
+                          </span>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                  <div className="flex flex-col items-start gap-0">
+                    <h4 className="font-semibold text-base">
+                      {user?.displayName}
+                    </h4>
+                    <p className="block">{user.email}</p>
+                  </div>
+                </div>
+                <ul className="mt-3">
+                  <li>
+                    <Link className="justify-between">
+                      Profile
+                      <span className="badge bg-success text-white">New</span>
+                    </Link>
+                  </li>
+                  <li>
+                    <Link>Dashborad</Link>
+                  </li>
+                  <li>
+                    <button>Logout</button>
+                  </li>
+                </ul>
+              </div>
+            </div>
+          )}
+        </div>
       </div>
     </nav>
   );
