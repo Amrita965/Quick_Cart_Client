@@ -70,4 +70,5 @@ const CreateCustomer = ({ formData, handleInputChange, handleSubmit, isLoading, 
   );
 };
 
+
 export default CreateCustomer;

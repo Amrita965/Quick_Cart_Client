@@ -1,7 +1,7 @@
 import { useContext, useState } from "react";
 import emailVerificationIcon from "../../assets/icons/email-verification-icon.png";
 import { AuthContext } from "../../Contexts/AuthProvider";
-import Toastify from "toastify-js";
+import { errorToast, successToast } from "../../utilities/toast";
 
 const EmailVerificationModal = ({ email }) => {
   const { sendVerficationEmail, auth, logout } = useContext(AuthContext);
@@ -13,24 +13,12 @@ const EmailVerificationModal = ({ email }) => {
     setIsLoading(true);
     try {
       await sendVerficationEmail(auth.currentUser);
-      Toastify({
-        text: "A new verification link has been sent to your email.",
-        position: "right",
-        style: {
-          background: "linear-gradient(to right, #00b09b, #96c93d)",
-        },
-      }).showToast();
+      successToast("A new verification link has been sent to your email.");
       await logout();
       setIsLoading(false);
       document.getElementById("email-verfication-modal").close();
     } catch (error) {
-      Toastify({
-        text: error.message,
-        position: "center",
-        style: {
-          background: "linear-gradient(to right, #ff0000, #ff6666)",
-        },
-      }).showToast();
+      errorToast(error.message);
     }
     setIsLoading(false);
   };

@@ -2,9 +2,22 @@ import { Link } from "react-router-dom";
 import logo from "../../assets/logo/quick-cart-logo.png";
 import { useContext } from "react";
 import { AuthContext } from "../../Contexts/AuthProvider";
+import { updateUserStatus } from "../../utilities/updateUserStatus";
+import { errorToast, successToast } from "../../utilities/toast";
 
 const UserDashboardTopNav = () => {
   const { user, logout } = useContext(AuthContext);
+
+  const handleLogout = () => {
+    logout()
+      .then(() => {
+        successToast("Logout successful");
+      })
+      .catch((error) => {
+        errorToast(error.message);
+      });
+    updateUserStatus("offline", user);
+  };
 
   return (
     <nav className="navbar bg-base-100 shadow-lg border">
@@ -38,7 +51,7 @@ const UserDashboardTopNav = () => {
             <polygon points="400 145.49 366.51 112 256 222.51 145.49 112 112 145.49 222.51 256 112 366.51 145.49 400 256 289.49 366.51 400 400 366.51 289.49 256 400 145.49" />
           </svg>
         </label>
-        <Link to="/dashboard" className="flex items-center">
+        <Link to="/" className="flex items-center">
           <img className="w-14" src={logo} alt="" />
           <h2 className="text-2xl font-semibold">Quick Cart</h2>
         </Link>
@@ -117,7 +130,7 @@ const UserDashboardTopNav = () => {
                     <Link>Dashborad</Link>
                   </li>
                   <li>
-                    <button>Logout</button>
+                    <button onClick={handleLogout}>Logout</button>
                   </li>
                 </ul>
               </div>

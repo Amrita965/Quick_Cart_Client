@@ -1,7 +1,7 @@
 import { useContext } from "react";
 import user from "../../assets/icons/user.png";
-import Toastify from "toastify-js";
 import { AuthContext } from "../../Contexts/AuthProvider";
+import { errorToast, successToast } from "../../utilities/toast";
 
 const SignUp = ({ setIsLogin }) => {
   const {
@@ -23,13 +23,7 @@ const SignUp = ({ setIsLogin }) => {
     const confPassword = form.confpassword.value;
 
     if (password !== confPassword) {
-      Toastify({
-        text: "Password and Confirm Password do not match.",
-        position: "center",
-        style: {
-          background: "linear-gradient(to right, #ff0000, #ff6666)",
-        },
-      }).showToast();
+      errorToast("Password and Confirm Password do not match.");
       setIsLoading(false);
       return;
     }
@@ -66,13 +60,7 @@ const SignUp = ({ setIsLogin }) => {
       form.reset();
     } catch (error) {
       console.log(error);
-      Toastify({
-        text: `${error.message}`,
-        position: "right",
-        style: {
-          background: "linear-gradient(to right, #ff0000, #ff6666)",
-        },
-      }).showToast();
+      errorToast(error.message);
       setIsLoading(false);
     }
   };
@@ -80,25 +68,11 @@ const SignUp = ({ setIsLogin }) => {
   const verifyEmail = async (currentUser) => {
     try {
       await sendVerficationEmail(currentUser);
-      Toastify({
-        text: "A verification link sent to your email address. After verification, you have to log in.",
-        close: true,
-        duration: 10000,
-        position: "center",
-        style: {
-          background: "linear-gradient(to right, #00b09b, #96c93d)",
-        },
-      }).showToast();
+      successToast("A verification link sent to your email address. After verification, you have to log in.");
       setIsLoading(false);
       setIsLogin(true);
     } catch (error) {
-      Toastify({
-        text: `${error.message}`,
-        position: "right",
-        style: {
-          background: "linear-gradient(to right, #ff0000, #ff6666)",
-        },
-      }).showToast();
+      errorToast(error.message);
       setIsLoading(false);
     }
   };

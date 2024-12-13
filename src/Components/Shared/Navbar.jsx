@@ -5,6 +5,8 @@ import { useContext } from "react";
 import { AuthContext } from "../../Contexts/AuthProvider";
 import StartToastifyInstance from "toastify-js";
 import Toastify from "toastify-js";
+import { updateUserStatus } from "../../utilities/updateUserStatus";
+import { errorToast, successToast } from "../../utilities/toast";
 
 const Navbar = () => {
   const { user, logout } = useContext(AuthContext);
@@ -12,25 +14,13 @@ const Navbar = () => {
   const handleLogout = () => {
     logout()
       .then(() => {
-        StartToastifyInstance({
-          text: "Logout successful",
-          position: "right",
-          style: {
-            background: "linear-gradient(to right, #00b09b, #96c93d)",
-          },
-        }).showToast();
+        successToast("Logout successfull");
       })
       .catch((error) => {
-        {
-          Toastify({
-            text: error.message,
-            position: "right",
-            style: {
-              background: "linear-gradient(to right, #00b09b, #96c93d)",
-            },
-          }).showToast();
-        }
+        errorToast(error.message);
       });
+
+      updateUserStatus("offline", user);
   };
 
   const navlinks = (

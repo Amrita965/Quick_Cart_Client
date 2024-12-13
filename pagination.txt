@@ -1,0 +1,13 @@
+Total Item = 110
+Item Per Page = 25
+Total Page = Total Item / Item Perpage
+	      =  30 / 25 = 5
+
+Page: 1, 2, 3, 4, 5
+
+Start						                            End
+----------------------------------------------------------------------------------------------
+Currentpage – 1 * item Perpage    -     (Currentpage number  * item per page)
+1 ---> 0 – 25 (0 upto 25)
+2 ---> 25 – 50
+

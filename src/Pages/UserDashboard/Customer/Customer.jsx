@@ -1,15 +1,23 @@
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import CustomModal from "../../../Components/UserDashboard/CustomModal";
 import useCustomHookForm from "../../../CustomHooks/useCustomHookForm";
 import CreateCustomer from "./CreateCustomer";
-import Toastify from "toastify-js";
 import { AuthContext } from "../../../Contexts/AuthProvider";
 import { useQuery } from "@tanstack/react-query";
+import ConfirmationModal from "../../../Components/ConfirmationModal";
+import { errorToast, successToast } from "../../../utilities/toast";
+import { array } from "prop-types";
 
 const Customer = () => {
-  const { user, isLoading, setIsLoading } = useContext(AuthContext);
+  const { user } = useContext(AuthContext);
   // const [seletedRow, setSelectedRow] = useState({});
   const [isUpdate, setIsUpdate] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [deletingCustomer, setDeletingCustomer] = useState({});
+  const [totalItem, setTotalItem] = useState(0);
+  const [itemPerPage, setItemPerPage] = useState(10);
+  const [currentPage, setCurrentPage] = useState(1);
+  const totalPage = Math.ceil(totalItem / itemPerPage);
 
   const [formData, setFormData, handleInputChange] = useCustomHookForm({
     name: "",
@@ -18,23 +26,28 @@ const Customer = () => {
   });
 
   const {
-    data: customers = [],
+    data,
     refetch,
     isLoading: loading,
   } = useQuery({
-    queryKey: ["customers"],
+    queryKey: ["customers", itemPerPage, currentPage],
     queryFn: () =>
-      fetch("http://localhost:8000/customers/").then((res) => res.json()),
+      fetch(
+        `http://localhost:8000/customers/${user?.uid}?page=${currentPage}&limit=${itemPerPage}`
+      ).then((res) => res.json()),
   });
+
+  useEffect(() => {
+    if (data) {
+      setTotalItem(data.total);
+    }
+  }, [data]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsLoading(true);
 
-    console.log(isUpdate);
-
     if (isUpdate) {
-      // console.log("Update")
       try {
         const response = await fetch(
           `http://localhost:8000/customers/${formData.id}`,
@@ -47,32 +60,17 @@ const Customer = () => {
           }
         );
         const data = await response.json();
-        if (data.message && response.status === 201) {
-          Toastify({
-            text: data.message,
-            close: true,
-            duration: 5000,
-            position: "center",
-            style: {
-              background: "linear-gradient(to right, #00b09b, #96c93d)",
-            },
-          }).showToast();
+        if (response.status === 201) {
+          successToast("Customer updated successfully");
           refetch();
           setIsLoading(false);
           document.getElementById("custom-modal").close();
         }
       } catch (error) {
-        Toastify({
-          text: error.message,
-          position: "center",
-          style: {
-            background: "linear-gradient(to right, #ff0000, #ff6666)",
-          },
-        }).showToast();
+        errorToast(error.message);
         setIsLoading(false);
         document.getElementById("custom-modal").close();
       }
-      console.log(formData);
     } else {
       const customer = {
         name: formData.name,
@@ -80,8 +78,6 @@ const Customer = () => {
         mobile: formData.mobile,
         user: user.uid,
       };
-
-      // console.log(customer)
 
       try {
         const res = await fetch("http://localhost:8000/customers/", {
@@ -92,16 +88,8 @@ const Customer = () => {
           body: JSON.stringify(customer),
         });
         const data = await res.json();
-        if (data.message && res.status === 201) {
-          Toastify({
-            text: data.message,
-            close: true,
-            duration: 5000,
-            position: "center",
-            style: {
-              background: "linear-gradient(to right, #00b09b, #96c93d)",
-            },
-          }).showToast();
+        if (res.status === 201) {
+          successToast("Customer created successfully");
         }
         setIsLoading(false);
         setFormData({
@@ -112,13 +100,7 @@ const Customer = () => {
         document.getElementById("custom-modal").close();
         refetch();
       } catch (error) {
-        Toastify({
-          text: error.message,
-          position: "center",
-          style: {
-            background: "linear-gradient(to right, #ff0000, #ff6666)",
-          },
-        }).showToast();
+        errorToast(error.message);
         setIsLoading(false);
         document.getElementById("custom-modal").close();
       }
@@ -126,16 +108,40 @@ const Customer = () => {
   };
 
   const handleEdit = (customer) => {
-    // console.log(customer);
     setFormData(customer);
     setIsUpdate(true);
     document.getElementById("custom-modal").showModal();
   };
 
+  const handleDelete = async () => {
+    setIsLoading(true);
+    try {
+      const res = await fetch(
+        `http://localhost:8000/customers/${deletingCustomer.id}`,
+        {
+          method: "DELETE",
+        }
+      );
+      // const data = await res.json();
+
+      if (res.status === 204) {
+        successToast("Customer Deleted successfully.");
+      }
+      refetch();
+      setIsLoading(false);
+      document.getElementById("confirmation-modal").close();
+    } catch (error) {
+      errorToast(error.message);
+      setIsLoading(false);
+      document.getElementById("confirmation-modal").close();
+    }
+  };
+
   return (
-    <section className="bg-white m-7 p-10">
+    <section className="bg-white m-3 md:m-7 p-3 md:p-10">
       <div className="flex items-center justify-between">
         <h2 className="text-2xl font-semibold">Customer</h2>
+
         <button
           onClick={() => {
             document.getElementById("custom-modal").showModal();
@@ -164,7 +170,7 @@ const Customer = () => {
             </tr>
           </thead>
           <tbody>
-            {customers.map((customer) => (
+            {data?.customers.map((customer) => (
               <tr key={customer.id}>
                 <th>{customer.id}</th>
                 <td>{customer.name}</td>
@@ -178,7 +184,15 @@ const Customer = () => {
                     >
                       Edit
                     </button>
-                    <button className="btn btn-outline btn-error grow">
+                    <button
+                      onClick={() => {
+                        document
+                          .getElementById("confirmation-modal")
+                          .showModal();
+                        setDeletingCustomer(customer);
+                      }}
+                      className="btn btn-outline btn-error grow"
+                    >
                       Delete
                     </button>
                   </div>
@@ -187,6 +201,58 @@ const Customer = () => {
             ))}
           </tbody>
         </table>
+      </div>
+      <div className="mt-20 flex justify-between items-center">
+        <div className="flex gap-5">
+          <div className="flex items-center gap-2">
+            <span className="text-nowrap">Items Per Page</span>
+            <select
+              value={itemPerPage}
+              onChange={(e) => {
+                setItemPerPage(e.target.value);
+                setCurrentPage(1);
+              }}
+              className="select select-bordered w-full max-w-xs"
+            >
+              <option>2</option>
+              <option>5</option>
+              <option>10</option>
+              <option>15</option>
+              <option>20</option>
+              <option>30</option>
+              <option>50</option>
+            </select>
+            <span className="text-nowrap">
+              {data?.customers.length > 0
+                ? (currentPage - 1) * itemPerPage + 1
+                : 0}{" "}
+              -{" "}
+              {currentPage * itemPerPage > totalItem
+                ? totalItem
+                : currentPage * itemPerPage}{" "}
+              of {totalItem}
+            </span>
+          </div>
+        </div>
+        <div className="join">
+          <button disabled={currentPage==1} onClick={() => setCurrentPage((prev) => prev - 1)} className="btn join-item">
+            <i className="fa-solid fa-angles-left"></i>Previous
+          </button>
+          {Array(totalPage)
+            .fill(null)
+            .map((_, index) => (
+              <button
+                onClick={() => setCurrentPage(index + 1)}
+                key={index}
+                className={`btn join-item ${currentPage == index + 1 && "bg-gradient-to-r from-fuchsia-600 to-pink-600 text-white"}`}
+              >
+                {index + 1}
+              </button>
+            ))}
+          <button onClick={() => setCurrentPage((prev) => prev + 1)} disabled={currentPage==totalPage} className="btn join-item">
+            Next <i className="fa-solid fa-angles-right"></i>
+          </button>
+        </div>
       </div>
       <CustomModal setIsUpdate={setIsUpdate} title="Create Customer">
         <CreateCustomer
@@ -199,6 +265,7 @@ const Customer = () => {
           setIsUpdate={setIsUpdate}
         />
       </CustomModal>
+      <ConfirmationModal handleDelete={handleDelete} isLoading={isLoading} />
     </section>
   );
 };

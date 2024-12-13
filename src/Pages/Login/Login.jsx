@@ -2,11 +2,14 @@ import { useContext } from "react";
 import user from "../../assets/icons/user.png";
 import { AuthContext } from "../../Contexts/AuthProvider";
 import EmailVerificationModal from "./EmailVerificationModal";
-import Toastify from "toastify-js";
+import { updateUserStatus } from "../../utilities/updateUserStatus";
+import { errorToast, successToast } from "../../utilities/toast";
+import { useNavigate } from "react-router-dom";
 
 const Login = ({ setIsLogin }) => {
   const { isLoading, setIsLoading, login } = useContext(AuthContext);
-
+  const navigate = useNavigate();
+  let from = location.state?.from?.pathname || "/";
   const handleLogin = async (e) => {
     setIsLoading(true);
     e.preventDefault();
@@ -22,26 +25,15 @@ const Login = ({ setIsLogin }) => {
         setIsLoading(false);
         return;
       }
+      updateUserStatus("active", user);
+      successToast("Successfully Logged In");
       form.reset();
-      Toastify({
-        text: "Successfully Logged In",
-        close: true,
-        position: "right",
-        style: {
-          background: "linear-gradient(to right, #00b09b, #96c93d)",
-        },
-      }).showToast();
+      navigate(from, { replace: true });
       setIsLoading(false);
     } catch (error) {
       // const errorCode = error.code;
       const errorMessage = error.message;
-      Toastify({
-        text: errorMessage,
-        position: "right",
-        style: {
-          background: "linear-gradient(to right, #ff0000, #ff6666)",
-        },
-      }).showToast();
+      errorToast(errorMessage);
       setIsLoading(false);
     }
   };
@@ -84,7 +76,6 @@ const Login = ({ setIsLogin }) => {
           </button>
         </p>
       </div>
-
       <EmailVerificationModal />
     </>
   );
