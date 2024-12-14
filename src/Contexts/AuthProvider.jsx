@@ -1,12 +1,14 @@
 import { createContext, useEffect, useState } from "react";
 import { getAuth, createUserWithEmailAndPassword, onAuthStateChanged, signInWithEmailAndPassword, sendEmailVerification, signOut, updateProfile } from "firebase/auth";
 import app from "../Firebase/firebase.config";
+import LoadingBar from 'react-top-loading-bar'
 
 export const AuthContext = createContext();
 
 const auth = getAuth(app);
 
 const AuthProvider = ({ children }) => {
+  const [progress, setProgress] = useState(25)
   const [user, setUser] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
 
@@ -42,6 +44,7 @@ const AuthProvider = ({ children }) => {
             // console.log(user);
         }
         setIsLoading(false);
+        setProgress(100)
         // console.log(user)
      })
      return () => {
@@ -61,9 +64,15 @@ const AuthProvider = ({ children }) => {
         logout,
         isLoading,
         setIsLoading,
+        setProgress,
       }}
     >
       {children}
+      <LoadingBar
+        color='#f11946'
+        progress={progress}
+        onLoaderFinished={() => setProgress(0)}
+      />
     </AuthContext.Provider>
   );
 };

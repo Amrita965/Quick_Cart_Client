@@ -1,4 +1,11 @@
-const CreateCustomer = ({ formData, handleInputChange, handleSubmit, isLoading, isUpdate, setIsUpdate, setFormData }) => {
+const CreateCustomer = ({
+  formData,
+  handleInputChange,
+  handleSubmit,
+  isUpdate,
+  setIsUpdate,
+  setFormData,
+}) => {
   const { name, email, mobile } = formData;
   return (
     <form onSubmit={handleSubmit}>
@@ -44,31 +51,28 @@ const CreateCustomer = ({ formData, handleInputChange, handleSubmit, isLoading, 
           className="input input-bordered w-full"
         />
       </label>
-      <div>
-        <div className="flex gap-2 justify-end mt-5">
-          <button
-            onClick={(e) => {
-              e.preventDefault();
-              setIsUpdate(false)
-              setFormData({
-                name: "",
-                email: "",
-                mobile: "",
-              })
-              document.getElementById("custom-modal").close();
-            }}
-            className="btn bg-gradient-to-r from-fuchsia-600 to-pink-600 text-white"
-          >
-            CLOSE
-          </button>
-          <button className="btn bg-gradient-to-r from-emerald-500 to-lime-600 text-white">
-            {isLoading && <span className="loading loading-spinner loading-md"></span>}{isUpdate ? "UPDATE": "SAVE"}
-          </button>
-        </div>
+      <div className="flex gap-2 justify-end mt-5">
+        <button
+          onClick={(e) => {
+            e.preventDefault();
+            setIsUpdate(false);
+            setFormData({
+              name: "",
+              email: "",
+              mobile: "",
+            });
+            document.getElementById("custom-modal").close();
+          }}
+          className="btn bg-gradient-to-r from-fuchsia-600 to-pink-600 text-white"
+        >
+          CLOSE
+        </button>
+        <button className="btn bg-gradient-to-r from-emerald-500 to-lime-600 text-white">
+          {isUpdate ? "UPDATE" : "SAVE"}
+        </button>
       </div>
     </form>
   );
 };
-
 
 export default CreateCustomer;

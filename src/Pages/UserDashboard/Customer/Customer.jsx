@@ -6,18 +6,18 @@ import { AuthContext } from "../../../Contexts/AuthProvider";
 import { useQuery } from "@tanstack/react-query";
 import ConfirmationModal from "../../../Components/ConfirmationModal";
 import { errorToast, successToast } from "../../../utilities/toast";
-import { array } from "prop-types";
 
 const Customer = () => {
-  const { user } = useContext(AuthContext);
-  // const [seletedRow, setSelectedRow] = useState({});
+  const { user, setProgress } = useContext(AuthContext);
   const [isUpdate, setIsUpdate] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
   const [deletingCustomer, setDeletingCustomer] = useState({});
-  const [totalItem, setTotalItem] = useState(0);
-  const [itemPerPage, setItemPerPage] = useState(10);
+  const [totalItems, setTotalItems] = useState(0);
+  const [itemsPerPage, setItemsPerPage] = useState(5);
   const [currentPage, setCurrentPage] = useState(1);
-  const totalPage = Math.ceil(totalItem / itemPerPage);
+  const [title, setTitle] = useState("");
+  const [searchText, setSearchText] = useState("");
+
+  const totalPage = Math.ceil(totalItems / itemsPerPage);
 
   const [formData, setFormData, handleInputChange] = useCustomHookForm({
     name: "",
@@ -28,26 +28,39 @@ const Customer = () => {
   const {
     data,
     refetch,
+    error,
     isLoading: loading,
   } = useQuery({
-    queryKey: ["customers", itemPerPage, currentPage],
+    queryKey: ["customers", itemsPerPage, currentPage, searchText],
     queryFn: () =>
       fetch(
-        `http://localhost:8000/customers/${user?.uid}?page=${currentPage}&limit=${itemPerPage}`
+        `http://localhost:8000/customers/${
+          user?.uid
+        }?page=${currentPage}&limit=${itemsPerPage}&search=${searchText.trim()}`
       ).then((res) => res.json()),
   });
 
   useEffect(() => {
-    if (data) {
-      setTotalItem(data.total);
+    if (loading) {
+      setProgress(50);
+    } else {
+      setProgress(100);
     }
-  }, [data]);
+    if (error) {
+      errorToast(error.message);
+    }
+    if (data) {
+      setTotalItems(data.total);
+    }
+  }, [data, loading, error, setProgress]);
 
   const handleSubmit = async (e) => {
+    document.getElementById("custom-modal").close();
+    setProgress(50);
     e.preventDefault();
-    setIsLoading(true);
 
     if (isUpdate) {
+      setIsUpdate(false);
       try {
         const response = await fetch(
           `http://localhost:8000/customers/${formData.id}`,
@@ -63,13 +76,11 @@ const Customer = () => {
         if (response.status === 201) {
           successToast("Customer updated successfully");
           refetch();
-          setIsLoading(false);
-          document.getElementById("custom-modal").close();
+          setProgress(100);
         }
       } catch (error) {
         errorToast(error.message);
-        setIsLoading(false);
-        document.getElementById("custom-modal").close();
+        setProgress(100);
       }
     } else {
       const customer = {
@@ -90,31 +101,32 @@ const Customer = () => {
         const data = await res.json();
         if (res.status === 201) {
           successToast("Customer created successfully");
+          setProgress(100);
         }
-        setIsLoading(false);
         setFormData({
           name: "",
           email: "",
           mobile: "",
         });
-        document.getElementById("custom-modal").close();
+
         refetch();
       } catch (error) {
         errorToast(error.message);
-        setIsLoading(false);
-        document.getElementById("custom-modal").close();
+        setProgress(100);
       }
     }
   };
 
   const handleEdit = (customer) => {
     setFormData(customer);
+    setTitle("Update Customer");
     setIsUpdate(true);
     document.getElementById("custom-modal").showModal();
   };
 
   const handleDelete = async () => {
-    setIsLoading(true);
+    setProgress(50);
+    document.getElementById("confirmation-modal").close();
     try {
       const res = await fetch(
         `http://localhost:8000/customers/${deletingCustomer.id}`,
@@ -126,35 +138,57 @@ const Customer = () => {
 
       if (res.status === 204) {
         successToast("Customer Deleted successfully.");
+        setProgress(100);
       }
       refetch();
-      setIsLoading(false);
-      document.getElementById("confirmation-modal").close();
     } catch (error) {
       errorToast(error.message);
-      setIsLoading(false);
-      document.getElementById("confirmation-modal").close();
+      setProgress(100);
     }
   };
 
   return (
     <section className="bg-white m-3 md:m-7 p-3 md:p-10">
-      <div className="flex items-center justify-between">
+      <div className="flex gap-4 md:gap-0 flex-col md:flex-row items-center justify-between px-3">
         <h2 className="text-2xl font-semibold">Customer</h2>
 
-        <button
-          onClick={() => {
-            document.getElementById("custom-modal").showModal();
-            setFormData({
-              name: "",
-              email: "",
-              mobile: "",
-            });
-          }}
-          className="btn bg-gradient-to-r from-fuchsia-600 to-pink-600 text-white"
-        >
-          CREATE
-        </button>
+        <div className="flex gap-2 items-center">
+          <label className="input input-bordered flex items-center gap-2">
+            <input
+              onChange={(e) => setSearchText(e.target.value)}
+              type="text"
+              className="grow"
+              placeholder="Search"
+            />
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 16 16"
+              fill="currentColor"
+              className="h-4 w-4 opacity-70"
+            >
+              <path
+                fillRule="evenodd"
+                d="M9.965 11.026a5 5 0 1 1 1.06-1.06l2.755 2.754a.75.75 0 1 1-1.06 1.06l-2.755-2.754ZM10.5 7a3.5 3.5 0 1 1-7 0 3.5 3.5 0 0 1 7 0Z"
+                clipRule="evenodd"
+              />
+            </svg>
+          </label>
+
+          <button
+            onClick={() => {
+              setTitle("Create Customer");
+              document.getElementById("custom-modal").showModal();
+              setFormData({
+                name: "",
+                email: "",
+                mobile: "",
+              });
+            }}
+            className="btn bg-gradient-to-r from-fuchsia-600 to-pink-600 text-white"
+          >
+            CREATE
+          </button>
+        </div>
       </div>
       <div className="divider"></div>
       <div className="overflow-x-auto">
@@ -170,6 +204,7 @@ const Customer = () => {
             </tr>
           </thead>
           <tbody>
+            {data?.customers ? "" : ""}
             {data?.customers.map((customer) => (
               <tr key={customer.id}>
                 <th>{customer.id}</th>
@@ -202,19 +237,21 @@ const Customer = () => {
           </tbody>
         </table>
       </div>
-      <div className="mt-20 flex justify-between items-center">
+      <div className="divider"></div>
+
+      <div className="flex flex-col md:flex-row gap-4 md:gap-0 justify-between items-center">
         <div className="flex gap-5">
           <div className="flex items-center gap-2">
             <span className="text-nowrap">Items Per Page</span>
             <select
-              value={itemPerPage}
+              value={itemsPerPage}
               onChange={(e) => {
-                setItemPerPage(e.target.value);
+                setItemsPerPage(parseInt(e.target.value));
                 setCurrentPage(1);
               }}
               className="select select-bordered w-full max-w-xs"
             >
-              <option>2</option>
+             
               <option>5</option>
               <option>10</option>
               <option>15</option>
@@ -224,18 +261,22 @@ const Customer = () => {
             </select>
             <span className="text-nowrap">
               {data?.customers.length > 0
-                ? (currentPage - 1) * itemPerPage + 1
+                ? (currentPage - 1) * itemsPerPage + 1
                 : 0}{" "}
               -{" "}
-              {currentPage * itemPerPage > totalItem
-                ? totalItem
-                : currentPage * itemPerPage}{" "}
-              of {totalItem}
+              {currentPage * itemsPerPage > totalItems
+                ? totalItems
+                : currentPage * itemsPerPage}{" "}
+              of {totalItems}
             </span>
           </div>
         </div>
         <div className="join">
-          <button disabled={currentPage==1} onClick={() => setCurrentPage((prev) => prev - 1)} className="btn join-item">
+          <button
+            disabled={currentPage === 1}
+            onClick={() => setCurrentPage((prev) => prev - 1)}
+            className="btn join-item"
+          >
             <i className="fa-solid fa-angles-left"></i>Previous
           </button>
           {Array(totalPage)
@@ -244,19 +285,25 @@ const Customer = () => {
               <button
                 onClick={() => setCurrentPage(index + 1)}
                 key={index}
-                className={`btn join-item ${currentPage == index + 1 && "bg-gradient-to-r from-fuchsia-600 to-pink-600 text-white"}`}
+                className={`btn join-item ${
+                  currentPage == index + 1 &&
+                  "bg-gradient-to-r from-fuchsia-600 to-pink-600 text-white"
+                }`}
               >
                 {index + 1}
               </button>
             ))}
-          <button onClick={() => setCurrentPage((prev) => prev + 1)} disabled={currentPage==totalPage} className="btn join-item">
+          <button
+            onClick={() => setCurrentPage((prev) => prev + 1)}
+            disabled={currentPage == totalPage}
+            className="btn join-item"
+          >
             Next <i className="fa-solid fa-angles-right"></i>
           </button>
         </div>
       </div>
-      <CustomModal setIsUpdate={setIsUpdate} title="Create Customer">
+      <CustomModal setIsUpdate={setIsUpdate} title={title}>
         <CreateCustomer
-          isLoading={isLoading}
           formData={formData}
           setFormData={setFormData}
           handleInputChange={handleInputChange}
@@ -265,7 +312,7 @@ const Customer = () => {
           setIsUpdate={setIsUpdate}
         />
       </CustomModal>
-      <ConfirmationModal handleDelete={handleDelete} isLoading={isLoading} />
+      <ConfirmationModal handleDelete={handleDelete} />
     </section>
   );
 };

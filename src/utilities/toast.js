@@ -14,6 +14,8 @@ const successToast = (message) => {
 const errorToast = (message) => {
   Toastify({
     text: message,
+    duration: 10000,
+    close: true,
     position: "center",
     style: {
       background: "linear-gradient(to right, #ff0000, #ff6666)",

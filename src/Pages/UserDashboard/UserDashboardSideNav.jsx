@@ -43,7 +43,7 @@ const UserDashboardSideNav = () => {
           </li>
           <li>
             <NavLink
-              to="/category"
+              to="/dashboard/category"
               className={({ isActive }) =>
                 isActive
                   ? "rounded-none bg-gradient-to-r from-fuchsia-600 to-purple-600 text-white px-5 py-4 border-l-4 border-slate-500"

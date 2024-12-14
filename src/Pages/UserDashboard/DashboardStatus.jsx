@@ -7,7 +7,7 @@ const DashboardStatus = () => {
         </div>
         <div className="px-4 text-gray-700">
           <h3 className="text-sm tracking-wider">Total Product</h3>
-          <p className="text-3xl font-medium">15</p>
+          <p className="text-3xl font-medium">0</p>
         </div>
       </div>
       <div className="flex items-center bg-white border rounded-sm overflow-hidden shadow">
@@ -16,7 +16,7 @@ const DashboardStatus = () => {
         </div>
         <div className="px-4 text-gray-700">
           <h3 className="text-sm tracking-wider">Total Category</h3>
-          <p className="text-3xl font-semibold">20</p>
+          <p className="text-3xl font-semibold">0</p>
         </div>
       </div>
       <div className="flex items-center bg-white border rounded-sm overflow-hidden shadow">
@@ -25,7 +25,7 @@ const DashboardStatus = () => {
         </div>
         <div className="px-4 text-gray-700">
           <h3 className="text-sm tracking-wider">Total Customer</h3>
-          <p className="text-3xl">10</p>
+          <p className="text-3xl">0</p>
         </div>
       </div>
       <div className="flex items-center bg-white border rounded-sm overflow-hidden shadow">
@@ -34,7 +34,7 @@ const DashboardStatus = () => {
         </div>
         <div className="px-4 text-gray-700">
           <h3 className="text-sm tracking-wider">Invoice</h3>
-          <p className="text-3xl">20</p>
+          <p className="text-3xl">0</p>
         </div>
       </div>
       <div className="flex items-center bg-white border rounded-sm overflow-hidden shadow">
@@ -43,7 +43,7 @@ const DashboardStatus = () => {
         </div>
         <div className="px-4 text-gray-700">
           <h3 className="text-sm tracking-wider">Total Sale</h3>
-          <p className="text-3xl">$60707</p>
+          <p className="text-3xl">৳0</p>
         </div>
       </div>
       <div className="flex items-center bg-white border rounded-sm overflow-hidden shadow">
@@ -52,7 +52,7 @@ const DashboardStatus = () => {
         </div>
         <div className="px-4 text-gray-700">
           <h3 className="text-sm tracking-wider">Vat Collection</h3>
-          <p className="text-3xl">$8411.09</p>
+          <p className="text-3xl">৳0</p>
         </div>
       </div>
       <div className="flex items-center bg-white border rounded-sm overflow-hidden shadow">
@@ -61,7 +61,7 @@ const DashboardStatus = () => {
         </div>
         <div className="px-4 text-gray-700">
           <h3 className="text-sm tracking-wider">Total Collection</h3>
-          <p className="text-3xl">$176632.65</p>
+          <p className="text-3xl">৳0</p>
         </div>
       </div>
     </div>

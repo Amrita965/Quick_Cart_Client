@@ -1,4 +1,4 @@
-import { useContext } from "react";
+import { useContext, useEffect } from "react";
 import { AuthContext } from "../Contexts/AuthProvider";
 import { Navigate, useLocation } from "react-router-dom";
 import PropTypes from "prop-types";
@@ -8,11 +8,7 @@ const PrivateRoute = ({ children }) => {
   const location = useLocation();
 
   if (isLoading) {
-    return (
-      <div className="min-h-screen flex justify-center items-center">
-        <span className="loading loading-spinner loading-lg"></span>
-      </div>
-    );
+    return;
   } else if (user) {
     return children;
   } else {

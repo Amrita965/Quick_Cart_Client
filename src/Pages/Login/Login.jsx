@@ -28,7 +28,7 @@ const Login = ({ setIsLogin }) => {
       updateUserStatus("active", user);
       successToast("Successfully Logged In");
       form.reset();
-      navigate(from, { replace: true });
+      navigate("/dashboard/status");
       setIsLoading(false);
     } catch (error) {
       // const errorCode = error.code;

@@ -1,4 +1,4 @@
-const ConfirmationModal = ({ handleDelete, isLoading }) => {
+const ConfirmationModal = ({ handleDelete }) => {
   return (
     <dialog id="confirmation-modal" className="modal">
       <div className="modal-box">
@@ -27,11 +27,7 @@ const ConfirmationModal = ({ handleDelete, isLoading }) => {
             >
               CLOSE
             </button>
-            <button
-              onClick={handleDelete}
-              className="btn btn-error text-white"
-            >
-              {isLoading &&<span className="loading loading-spinner loading-md"></span>}
+            <button onClick={handleDelete} className="btn btn-error text-white">
               DELETE
             </button>
           </div>
