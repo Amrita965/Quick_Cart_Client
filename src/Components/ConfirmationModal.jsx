@@ -1,4 +1,5 @@
-const ConfirmationModal = ({ handleDelete }) => {
+const ConfirmationModal = ({handleDelete}) => {
+
   return (
     <dialog id="confirmation-modal" className="modal">
       <div className="modal-box">

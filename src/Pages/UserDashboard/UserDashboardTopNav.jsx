@@ -24,7 +24,7 @@ const UserDashboardTopNav = () => {
       <div className="flex-1 flex items-center gap-5">
         <label
           htmlFor="user-dashboard-sidenav"
-          className="btn btn-circle swap swap-rotate drawer-button"
+          className="btn btn-circle swap swap-rotate drawer-button lg:hidden "
         >
           {/* this hidden checkbox controls the state */}
           <input type="checkbox" />

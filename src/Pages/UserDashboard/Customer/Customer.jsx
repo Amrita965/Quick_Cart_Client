@@ -40,6 +40,8 @@ const Customer = () => {
       ).then((res) => res.json()),
   });
 
+  console.log(data);
+
   useEffect(() => {
     if (loading) {
       setProgress(50);

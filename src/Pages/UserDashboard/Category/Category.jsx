@@ -5,6 +5,7 @@ import CategoryForm from "./CategoryForm";
 import { errorToast, successToast } from "../../../utilities/toast";
 import { AuthContext } from "./../../../Contexts/AuthProvider";
 import { useQuery } from "@tanstack/react-query";
+import ConfirmationModal from './../../../Components/ConfirmationModal';
 
 const Category = () => {
   const { user, setProgress } = useContext(AuthContext);
@@ -13,11 +14,13 @@ const Category = () => {
   });
   const [title, setTitle] = useState("");
   const [isUpdate, setIsUpdate] = useState(false);
+  const [deletingCategory, setDeletingCategory] = useState({});
 
   const {
     data: categories = [],
     isLoading,
     error,
+    refetch
   } = useQuery({
     queryKey: ["categories"],
     queryFn: () =>
@@ -45,6 +48,7 @@ const Category = () => {
     });
   };
 
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setProgress(50);
@@ -63,7 +67,9 @@ const Category = () => {
       console.log(data);
       if (res.status === 201) {
         successToast("Category created successfully");
+        refetch();
         setProgress(100);
+      
       }
     } catch (error) {
       const errorMessage = error.message;
@@ -71,6 +77,27 @@ const Category = () => {
       setProgress(100);
     }
   };
+
+  const handleDeleteCategory = async() => {
+    document.getElementById("confirmation-modal").close();
+    setProgress(50);
+    try {
+      const res = await fetch(`http://localhost:8000/categories/${deletingCategory.id}`, {
+        method: "DELETE"
+      })
+      const data = await res.json();
+      console.log(data);
+      if(res.status === 200) {
+        successToast(data.message);
+        refetch();
+        setProgress(100);
+      }
+
+    } catch(error) {
+      errorToast(error.message);
+      setProgress(100);
+    }
+  }
 
   return (
     <section className="bg-white m-3 md:m-7 p-3 md:p-10">
@@ -120,7 +147,10 @@ const Category = () => {
                 <td>{category.name}</td>
                 <td>
                   <button className="btn btn-outline btn-success mr-2">Edit</button>
-                  <button className="btn btn-outline btn-error">Delete</button>
+                  <button onClick={() => {
+                    document.getElementById("confirmation-modal").showModal();
+                    setDeletingCategory(category);
+                  }} className="btn btn-outline btn-error">Delete</button>
                 </td>
               </tr>
             ))}
@@ -135,6 +165,7 @@ const Category = () => {
           handleSubmit={handleSubmit}
         />
       </CustomModal>
+      <ConfirmationModal handleDelete={handleDeleteCategory}  />
     </section>
   );
 };

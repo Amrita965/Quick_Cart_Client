@@ -9,7 +9,6 @@ import { useNavigate } from "react-router-dom";
 const Login = ({ setIsLogin }) => {
   const { isLoading, setIsLoading, login } = useContext(AuthContext);
   const navigate = useNavigate();
-  let from = location.state?.from?.pathname || "/";
   const handleLogin = async (e) => {
     setIsLoading(true);
     e.preventDefault();
@@ -31,7 +30,6 @@ const Login = ({ setIsLogin }) => {
       navigate("/dashboard/status");
       setIsLoading(false);
     } catch (error) {
-      // const errorCode = error.code;
       const errorMessage = error.message;
       errorToast(errorMessage);
       setIsLoading(false);
