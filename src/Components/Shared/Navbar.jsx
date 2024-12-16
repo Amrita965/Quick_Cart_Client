@@ -20,7 +20,7 @@ const Navbar = () => {
         errorToast(error.message);
       });
 
-      updateUserStatus("offline", user);
+    updateUserStatus("offline", user);
   };
 
   const navlinks = (
@@ -148,11 +148,17 @@ const Navbar = () => {
                   <div className="flex flex-row items-center gap-3 p-2">
                     <div>
                       {user?.photoURL ? (
-                        <div className="w-10 rounded-full">
-                          <img
-                            alt="Tailwind CSS Navbar component"
-                            src={user?.photoURL}
-                          />
+                        <div
+                          tabIndex={0}
+                          role="button"
+                          className="btn btn-ghost btn-circle avatar"
+                        >
+                          <div className="w-10 rounded-full">
+                            <img
+                              alt="Tailwind CSS Navbar component"
+                              src={user.photoURL}
+                            />
+                          </div>
                         </div>
                       ) : (
                         <div className="avatar placeholder mr hover:bg-inherit">
@@ -173,7 +179,7 @@ const Navbar = () => {
                   </div>
                   <ul className="mt-3">
                     <li>
-                      <Link className="justify-between">
+                      <Link to="/dashboard/profile" className="justify-between">
                         Profile
                         <span className="badge bg-success text-white">New</span>
                       </Link>

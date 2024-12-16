@@ -6,6 +6,8 @@ import DashboardStatus from "../Pages/UserDashboard/DashboardStatus";
 import Customer from "../Pages/UserDashboard/Customer/Customer";
 import PrivateRoute from "./PrivateRoute";
 import Category from "../Pages/UserDashboard/Category/Category";
+import UserProfile from "../Pages/UserDashboard/UserProfile/UserProfile";
+import Product from "../Pages/UserDashboard/Product/Product";
 
 const router = createBrowserRouter([
   {
@@ -31,12 +33,20 @@ const router = createBrowserRouter([
         element: <DashboardStatus />,
       },
       {
-        path: "/dashboard/customer",
+        path: "/dashboard/customers",
         element: <Customer />,
       },
       {
-        path: "/dashboard/category",
+        path: "/dashboard/categories",
         element: <Category />
+      },
+      {
+        path: "/dashboard/products",
+        element: <Product />
+      },
+      {
+        path: "/dashboard/profile",
+        element: <UserProfile />
       }
     ],
   },

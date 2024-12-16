@@ -7,7 +7,15 @@ Pages: 1, 2, 3, 4, 5,
 
 Start						                            End
 ----------------------------------------------------------------------------------------------
-Current page – 1 * Items Per Page    -     (Current page  * Items per page)
+(Current page – 1) * Items Per Page    -     (Current page  * Items per page)
 1 ---> 0 – 25 (0 upto 25)
 2 ---> 25 – 50
+
+
+
+1 2 3 4 5 6 7 8 9
+
+currentPage = 1
+currentPage + index < index
+
 

@@ -11,6 +11,7 @@ const AuthProvider = ({ children }) => {
   const [progress, setProgress] = useState(25)
   const [user, setUser] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [updatePhoto,setUpdatePhoto] = useState(false);
 
   // console.log(user);
 
@@ -50,7 +51,7 @@ const AuthProvider = ({ children }) => {
      return () => {
         unsubscribe();
      }
-  }, [user])
+  }, [user, updatePhoto])
 
   return (
     <AuthContext.Provider
@@ -65,6 +66,7 @@ const AuthProvider = ({ children }) => {
         isLoading,
         setIsLoading,
         setProgress,
+        setUpdatePhoto
       }}
     >
       {children}

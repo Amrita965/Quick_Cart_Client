@@ -40,7 +40,7 @@ const Customer = () => {
       ).then((res) => res.json()),
   });
 
-  console.log(data);
+  // console.log(data);
 
   useEffect(() => {
     if (loading) {
@@ -150,9 +150,9 @@ const Customer = () => {
   };
 
   return (
-    <section className="bg-white m-3 md:m-7 p-3 md:p-10">
+    <section className="bg-white m-3 md:m-7 p-3 md:p-10 shadow-md">
       <div className="flex gap-4 md:gap-0 flex-col md:flex-row items-center justify-between px-3">
-        <h2 className="text-2xl font-semibold">Customer</h2>
+        <h2 className="text-2xl font-semibold">Customers</h2>
 
         <div className="flex gap-2 items-center">
           <label className="input input-bordered flex items-center gap-2">
@@ -253,7 +253,7 @@ const Customer = () => {
               }}
               className="select select-bordered w-full max-w-xs"
             >
-             
+              <option>2</option>
               <option>5</option>
               <option>10</option>
               <option>15</option>
@@ -279,25 +279,31 @@ const Customer = () => {
             onClick={() => setCurrentPage((prev) => prev - 1)}
             className="btn join-item"
           >
-            <i className="fa-solid fa-angles-left"></i>Previous
+            <i className="fa-solid fa-angles-left"></i> Previous
           </button>
           {Array(totalPage)
             .fill(null)
-            .map((_, index) => (
-              <button
-                onClick={() => setCurrentPage(index + 1)}
-                key={index}
-                className={`btn join-item ${
-                  currentPage == index + 1 &&
-                  "bg-gradient-to-r from-fuchsia-600 to-pink-600 text-white"
-                }`}
-              >
-                {index + 1}
-              </button>
-            ))}
+            .map((_, index) => {
+              const page = index + 1;
+              const isVisible =
+                page >= currentPage - 2 && page <= currentPage + 2;
+
+              return (
+                <button
+                  onClick={() => setCurrentPage(page)}
+                  key={index}
+                  className={`btn join-item ${isVisible ? "" : "hidden"} ${
+                    currentPage === page &&
+                    "bg-gradient-to-r from-fuchsia-600 to-pink-600 text-white"
+                  }`}
+                >
+                  {page}
+                </button>
+              );
+            })}
           <button
             onClick={() => setCurrentPage((prev) => prev + 1)}
-            disabled={currentPage == totalPage}
+            disabled={currentPage === totalPage}
             className="btn join-item"
           >
             Next <i className="fa-solid fa-angles-right"></i>

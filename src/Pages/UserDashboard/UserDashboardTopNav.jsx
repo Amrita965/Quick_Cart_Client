@@ -7,7 +7,7 @@ import { errorToast, successToast } from "../../utilities/toast";
 
 const UserDashboardTopNav = () => {
   const { user, logout } = useContext(AuthContext);
-
+  
   const handleLogout = () => {
     logout()
       .then(() => {
@@ -20,7 +20,7 @@ const UserDashboardTopNav = () => {
   };
 
   return (
-    <nav className="navbar bg-base-100 shadow-lg border">
+    <nav className="navbar bg-base-100 shadow-sm  sticky top-0 z z-[100]">
       <div className="flex-1 flex items-center gap-5">
         <label
           htmlFor="user-dashboard-sidenav"
@@ -121,13 +121,13 @@ const UserDashboardTopNav = () => {
                 </div>
                 <ul className="mt-3">
                   <li>
-                    <Link className="justify-between">
+                    <Link to="/dashboard/profile" className="justify-between">
                       Profile
                       <span className="badge bg-success text-white">New</span>
                     </Link>
                   </li>
                   <li>
-                    <Link>Dashborad</Link>
+                    <Link to="/dashboard/status">Dashborad</Link>
                   </li>
                   <li>
                     <button onClick={handleLogout}>Logout</button>

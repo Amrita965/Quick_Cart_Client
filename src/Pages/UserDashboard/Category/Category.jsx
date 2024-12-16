@@ -5,7 +5,7 @@ import CategoryForm from "./CategoryForm";
 import { errorToast, successToast } from "../../../utilities/toast";
 import { AuthContext } from "./../../../Contexts/AuthProvider";
 import { useQuery } from "@tanstack/react-query";
-import ConfirmationModal from './../../../Components/ConfirmationModal';
+import ConfirmationModal from "./../../../Components/ConfirmationModal";
 
 const Category = () => {
   const { user, setProgress } = useContext(AuthContext);
@@ -15,18 +15,20 @@ const Category = () => {
   const [title, setTitle] = useState("");
   const [isUpdate, setIsUpdate] = useState(false);
   const [deletingCategory, setDeletingCategory] = useState({});
+  const [searchText, setSearchText] = useState("");
+  const [total, setTotal] = useState(0);
+  const [itemsPerPage, setItemsPerPage] = useState(5);
+  const [currentPage, setCurrentPage] = useState(1);
 
-  const {
-    data: categories = [],
-    isLoading,
-    error,
-    refetch
-  } = useQuery({
-    queryKey: ["categories"],
+  const totalPages = Math.ceil(total / itemsPerPage);
+  console.log(totalPages);
+
+  const { data, isLoading, error, refetch } = useQuery({
+    queryKey: ["categories", searchText, itemsPerPage, currentPage],
     queryFn: () =>
-      fetch(`http://localhost:8000/categories/${user.uid}`).then((res) =>
-        res.json()
-      ),
+      fetch(
+        `http://localhost:8000/categories/${user.uid}?page=${currentPage}&limit=${itemsPerPage}&searchText=${searchText}`
+      ).then((res) => res.json()),
   });
 
   useEffect(() => {
@@ -38,7 +40,10 @@ const Category = () => {
     if (error) {
       errorToast(error.message);
     }
-  }, [isLoading]);
+    if (data) {
+      setTotal(data.total);
+    }
+  }, [isLoading, error, setProgress, total, setTotal, data]);
 
   const handleCreate = () => {
     document.getElementById("custom-modal").showModal();
@@ -46,67 +51,108 @@ const Category = () => {
     setFormData({
       name: "",
     });
+    setIsUpdate(false);
   };
 
+  const handleEdit = (category) => {
+    document.getElementById("custom-modal").showModal();
+    setTitle("Update Category");
+    setFormData(category);
+    setIsUpdate(true);
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setProgress(50);
     document.getElementById("custom-modal").close();
-    formData.user = user.uid;
-    console.log(formData);
-    try {
-      const res = await fetch("http://localhost:8000/categories", {
-        headers: {
-          "content-type": "application/json",
-        },
-        method: "POST",
-        body: JSON.stringify(formData),
-      });
-      const data = await res.json();
-      console.log(data);
-      if (res.status === 201) {
-        successToast("Category created successfully");
-        refetch();
+    if (isUpdate) {
+      console.log(formData);
+      try {
+        const res = await fetch(
+          `http://localhost:8000/categories/${formData.id}`,
+          {
+            method: "PATCH",
+            headers: {
+              "content-type": "application/json",
+            },
+            body: JSON.stringify({
+              name: formData.name,
+            }),
+          }
+        );
+        const data = await res.json();
+        if (data.message && res.status === 200) {
+          successToast(data.message);
+          setProgress(100);
+          refetch();
+        }
+      } catch (error) {
+        errorToast(error.message);
         setProgress(100);
-      
       }
-    } catch (error) {
-      const errorMessage = error.message;
-      errorToast(errorMessage);
-      setProgress(100);
+    } else {
+      formData.user = user.uid;
+      try {
+        const res = await fetch("http://localhost:8000/categories", {
+          headers: {
+            "content-type": "application/json",
+          },
+          method: "POST",
+          body: JSON.stringify(formData),
+        });
+        const data = await res.json();
+        console.log(data);
+        if (res.status === 201) {
+          successToast("Category created successfully");
+          refetch();
+          setProgress(100);
+        }
+      } catch (error) {
+        const errorMessage = error.message;
+        errorToast(errorMessage);
+        setProgress(100);
+      }
     }
   };
 
-  const handleDeleteCategory = async() => {
+  const handleDeleteCategory = async () => {
     document.getElementById("confirmation-modal").close();
     setProgress(50);
     try {
-      const res = await fetch(`http://localhost:8000/categories/${deletingCategory.id}`, {
-        method: "DELETE"
-      })
+      const res = await fetch(
+        `http://localhost:8000/categories/${deletingCategory.id}`,
+        {
+          method: "DELETE",
+        }
+      );
       const data = await res.json();
       console.log(data);
-      if(res.status === 200) {
+      if (res.status === 200) {
         successToast(data.message);
         refetch();
         setProgress(100);
       }
-
-    } catch(error) {
+    } catch (error) {
       errorToast(error.message);
       setProgress(100);
     }
-  }
+  };
+
+  console.log(searchText);
 
   return (
-    <section className="bg-white m-3 md:m-7 p-3 md:p-10">
+    <section className="bg-white m-3 md:m-7 p-3 md:p-10 shadow-md">
       <div className="flex gap-4 md:gap-0 flex-col md:flex-row items-center justify-between px-3">
-        <h2 className="text-2xl font-semibold">Category</h2>
+        <h2 className="text-2xl font-semibold">Categories</h2>
 
         <div className="flex gap-2 items-center">
           <label className="input input-bordered flex items-center gap-2">
-            <input type="text" className="grow" placeholder="Search" />
+            <input
+              onChange={(e) => setSearchText(e.target.value)}
+              type="text"
+              className="grow"
+              placeholder="Search"
+            />
             <svg
               xmlns="http://www.w3.org/2000/svg"
               viewBox="0 0 16 16"
@@ -141,21 +187,97 @@ const Category = () => {
             </tr>
           </thead>
           <tbody>
-            {categories.map((category) => (
+            {data?.categories.map((category) => (
               <tr key={category.id}>
                 <th>{category.id}</th>
                 <td>{category.name}</td>
                 <td>
-                  <button className="btn btn-outline btn-success mr-2">Edit</button>
-                  <button onClick={() => {
-                    document.getElementById("confirmation-modal").showModal();
-                    setDeletingCategory(category);
-                  }} className="btn btn-outline btn-error">Delete</button>
+                  <button
+                    onClick={() => {
+                      handleEdit(category);
+                    }}
+                    className="btn btn-outline btn-success mr-2"
+                  >
+                    Edit
+                  </button>
+                  <button
+                    onClick={() => {
+                      document.getElementById("confirmation-modal").showModal();
+                      setDeletingCategory(category);
+                    }}
+                    className="btn btn-outline btn-error"
+                  >
+                    Delete
+                  </button>
                 </td>
               </tr>
             ))}
           </tbody>
         </table>
+      </div>
+      <div className="divider"></div>
+      <div className="flex items-center justify-between">
+        <div className="flex gap-5">
+          <div className="flex items-center gap-2">
+            <span className="text-nowrap">Items Per Page</span>
+            <select
+              onChange={(e) => {
+                setItemsPerPage(e.target.value);
+                setCurrentPage(1);
+              }}
+              value={itemsPerPage}
+              className="select select-bordered w-full max-w-xs"
+            >
+              <option>2</option>
+              <option>5</option>
+              <option>10</option>
+              <option>15</option>
+              <option>20</option>
+              <option>30</option>
+              <option>50</option>
+            </select>
+            <span className="text-nowrap">{(currentPage - 1) * itemsPerPage + 1} - {currentPage * itemsPerPage} of {total}</span>
+          </div>
+        </div>
+        <div className="join">
+          <button
+            disabled={currentPage == 1}
+            onClick={() => setCurrentPage((prev) => prev - 1)}
+            className="btn join-item"
+          >
+            <i className="fa-solid fa-angles-left"></i> Previous
+          </button>
+          {Array(totalPages)
+            .fill(null)
+            .map((_, index) => {
+              const page = index + 1;
+              const isVisible =
+                page >= currentPage - 2 && page <= currentPage + 2;
+              return (
+                <button
+                  onClick={() => {
+                    setCurrentPage(index + 1);
+                  }}
+                  key={index}
+                  className={`btn join-item ${isVisible ? "" : "hidden"} ${
+                    currentPage == index + 1 &&
+                    "bg-gradient-to-r from-fuchsia-600 to-pink-600 text-white"
+                  }`}
+                >
+                  {index + 1}
+                </button>
+              );
+            })}
+          <button
+            disabled={currentPage == totalPages}
+            onClick={() => {
+              setCurrentPage((prev) => prev + 1);
+            }}
+            className="btn join-item"
+          >
+            Next <i className="fa-solid fa-angles-right"></i>
+          </button>
+        </div>
       </div>
       <CustomModal title={title}>
         <CategoryForm
@@ -163,9 +285,10 @@ const Category = () => {
           formData={formData}
           handleInputChange={handleInputChange}
           handleSubmit={handleSubmit}
+          deletingCategory={deletingCategory}
         />
       </CustomModal>
-      <ConfirmationModal handleDelete={handleDeleteCategory}  />
+      <ConfirmationModal handleDelete={handleDeleteCategory} />
     </section>
   );
 };
