@@ -33,7 +33,7 @@ const DashboardStatus = () => {
         </div>
         <div className="px-4 text-gray-700">
           <h3 className="text-sm tracking-wider">Total Product</h3>
-          <p className="text-3xl font-medium">0</p>
+          <p className="text-3xl font-medium">{data?.total_products}</p>
         </div>
       </div>
       <div className="flex items-center bg-white border rounded-sm overflow-hidden shadow">

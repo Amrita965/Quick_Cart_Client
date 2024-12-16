@@ -198,11 +198,11 @@ const Customer = () => {
           {/* head */}
           <thead>
             <tr>
-              <th>ID</th>
-              <th>Name</th>
-              <th>Email</th>
-              <th>Mobile</th>
-              <th>Action</th>
+              <th className="w-1/5">ID</th>
+              <th className="w-1/5">Name</th>
+              <th className="w-1/5">Email</th>
+              <th className="w-1/5">Mobile</th>
+              <th className="w-1/5">Action</th>
             </tr>
           </thead>
           <tbody>

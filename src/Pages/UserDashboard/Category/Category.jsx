@@ -21,7 +21,6 @@ const Category = () => {
   const [currentPage, setCurrentPage] = useState(1);
 
   const totalPages = Math.ceil(total / itemsPerPage);
-  console.log(totalPages);
 
   const { data, isLoading, error, refetch } = useQuery({
     queryKey: ["categories", searchText, itemsPerPage, currentPage],
@@ -138,7 +137,6 @@ const Category = () => {
     }
   };
 
-  console.log(searchText);
 
   return (
     <section className="bg-white m-3 md:m-7 p-3 md:p-10 shadow-md">
@@ -181,9 +179,9 @@ const Category = () => {
           {/* head */}
           <thead>
             <tr>
-              <th>ID</th>
-              <th>Name</th>
-              <th>Action</th>
+              <th className="w-1/3">ID</th>
+              <th className="w-1/3">Name</th>
+              <th className="w-1/3">Action</th>
             </tr>
           </thead>
           <tbody>
