@@ -1,8 +1,8 @@
-const CustomModal = ({children, title, setIsUpdate}) => {
+const CustomModal = ({children, title, setIsUpdate, modalWidth}) => {
   return (
     <div>
       <dialog id="custom-modal" className="modal">
-        <div className="modal-box">
+        <div className={`modal-box ${modalWidth}`}>
           <form method="dialog">
             {/* if there is a button in form, it will close the modal */}
             <button onClick={() => {

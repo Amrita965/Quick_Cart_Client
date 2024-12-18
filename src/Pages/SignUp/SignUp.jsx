@@ -54,12 +54,10 @@ const SignUp = ({ setIsLogin }) => {
       });
       const data = await res.json();
 
-      // console.log(data);
 
       verifyEmail(user);
       form.reset();
     } catch (error) {
-      console.log(error);
       errorToast(error.message);
       setIsLoading(false);
     }

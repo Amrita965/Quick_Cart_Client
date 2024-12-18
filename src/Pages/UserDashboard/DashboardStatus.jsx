@@ -60,7 +60,7 @@ const DashboardStatus = () => {
         </div>
         <div className="px-4 text-gray-700">
           <h3 className="text-sm tracking-wider">Invoice</h3>
-          <p className="text-3xl">0</p>
+          <p className="text-3xl font-medium">0</p>
         </div>
       </div>
       <div className="flex items-center bg-white border rounded-sm overflow-hidden shadow">
@@ -69,7 +69,7 @@ const DashboardStatus = () => {
         </div>
         <div className="px-4 text-gray-700">
           <h3 className="text-sm tracking-wider">Total Sale</h3>
-          <p className="text-3xl">৳0</p>
+          <p className="text-3xl font-medium">৳0</p>
         </div>
       </div>
       <div className="flex items-center bg-white border rounded-sm overflow-hidden shadow">
@@ -78,7 +78,7 @@ const DashboardStatus = () => {
         </div>
         <div className="px-4 text-gray-700">
           <h3 className="text-sm tracking-wider">Vat Collection</h3>
-          <p className="text-3xl">৳0</p>
+          <p className="text-3xl font-medium">৳0</p>
         </div>
       </div>
       <div className="flex items-center bg-white border rounded-sm overflow-hidden shadow">
@@ -87,7 +87,7 @@ const DashboardStatus = () => {
         </div>
         <div className="px-4 text-gray-700">
           <h3 className="text-sm tracking-wider">Total Collection</h3>
-          <p className="text-3xl">৳0</p>
+          <p className="text-3xl font-medium">৳0</p>
         </div>
       </div>
     </div>

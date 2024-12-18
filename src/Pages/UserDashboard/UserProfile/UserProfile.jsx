@@ -63,7 +63,6 @@ const UserProfile = () => {
         setProgress(50);
         const data = await response.json();
         setProgress(75);
-        console.log(data.data.url);
         await updateUserProfile(user, user.displayName, data.data.url);
         setUpdatePhoto((prev) => !prev);
         setProgress(100);
@@ -73,6 +72,7 @@ const UserProfile = () => {
       }
     }
   };
+
   return (
     <section className="max-w-screen-sm bg-white m-3 md:my-10 md:mx-auto p-3 md:p-10 shadow-md">
       <div className="bg-white flex flex-col items-center justify-center rounded-lg">

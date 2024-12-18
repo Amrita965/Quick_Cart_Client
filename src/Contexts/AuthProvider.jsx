@@ -13,7 +13,6 @@ const AuthProvider = ({ children }) => {
   const [isLoading, setIsLoading] = useState(true);
   const [updatePhoto,setUpdatePhoto] = useState(false);
 
-  // console.log(user);
 
   const createUser = (email, password) => {
     return createUserWithEmailAndPassword(auth, email, password);
@@ -42,11 +41,9 @@ const AuthProvider = ({ children }) => {
      const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
         if((currentUser && currentUser?.emailVerified) || !currentUser) {
             setUser(currentUser);
-            // console.log(user);
         }
         setIsLoading(false);
         setProgress(100)
-        // console.log(user)
      })
      return () => {
         unsubscribe();

@@ -8,6 +8,7 @@ import PrivateRoute from "./PrivateRoute";
 import Category from "../Pages/UserDashboard/Category/Category";
 import UserProfile from "../Pages/UserDashboard/UserProfile/UserProfile";
 import Product from "../Pages/UserDashboard/Product/Product";
+import CreateSale from "../Pages/UserDashboard/CreateSale/CreateSale";
 
 const router = createBrowserRouter([
   {
@@ -47,6 +48,10 @@ const router = createBrowserRouter([
       {
         path: "/dashboard/profile",
         element: <UserProfile />
+      },
+      {
+        path: "/dashboard/create-sale",
+        element: <CreateSale />
       }
     ],
   },

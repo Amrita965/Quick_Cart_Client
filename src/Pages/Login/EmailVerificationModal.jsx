@@ -7,7 +7,6 @@ const EmailVerificationModal = ({ email }) => {
   const { sendVerficationEmail, auth, logout } = useContext(AuthContext);
   const [isLoading, setIsLoading] = useState(false);
 
-  // console.log(auth.currentUser);
 
   const handleRendVerificationEmail = async () => {
     setIsLoading(true);

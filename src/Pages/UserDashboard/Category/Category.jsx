@@ -65,7 +65,6 @@ const Category = () => {
     setProgress(50);
     document.getElementById("custom-modal").close();
     if (isUpdate) {
-      console.log(formData);
       try {
         const res = await fetch(
           `http://localhost:8000/categories/${formData.id}`,
@@ -100,7 +99,6 @@ const Category = () => {
           body: JSON.stringify(formData),
         });
         const data = await res.json();
-        console.log(data);
         if (res.status === 201) {
           successToast("Category created successfully");
           refetch();
@@ -125,7 +123,6 @@ const Category = () => {
         }
       );
       const data = await res.json();
-      console.log(data);
       if (res.status === 200) {
         successToast(data.message);
         refetch();
