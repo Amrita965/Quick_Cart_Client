@@ -1,14 +1,18 @@
 import { useContext, useEffect, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { AuthContext } from "../../../../Contexts/AuthProvider";
+import CustomModal from "../../../../Components/UserDashboard/CustomModal";
+import useCustomHookForm from "../../../../CustomHooks/useCustomHookForm";
+import AddProductForm from "./AddProductForm";
 
-const Product = () => {
+const Product = ({ setSelectedProducts, selectedProducts }) => {
   const { user, setProgress } = useContext(AuthContext);
   const [total, setTotal] = useState(0);
   const [itemsPerPage, setItemsPerPage] = useState(10);
   const [currentPage, setCurrentPage] = useState(1);
   const [searchText, setSearchText] = useState("");
-
+  const [title, setTitle] = useState("");
+  const [selectedProduct, setSelectedProduct] = useState();
   const totalPage = Math.ceil(total / itemsPerPage);
 
   const { isLoading, error, data, refetch } = useQuery({
@@ -33,10 +37,26 @@ const Product = () => {
     }
   }, [isLoading, error, setProgress, data]);
 
+  const handleAddProduct = (e, product) => {
+    e.preventDefault();
+    const form = e.target;
+    const quantity = parseInt(form.quantity.value);
+    document.getElementById("custom-modal").close();
+    setSelectedProducts([
+      ...selectedProducts,
+      {
+        ...selectedProduct,
+        quantity,
+        total_price: selectedProduct.price * quantity,
+      },
+    ]);
+
+  };
+
   return (
     <section className="bg-white m-3  p-3 md:p-5 shadow-md rounded-lg">
       <div className="flex gap-4 md:gap-0 flex-col md:flex-row items-center justify-between px-3">
-        <h2 className="font-semibold">Product</h2>
+        <h2 className="font-semibold">Products</h2>
 
         <div className="flex gap-2 items-center">
           <input
@@ -53,7 +73,7 @@ const Product = () => {
           {/* head */}
           <thead>
             <tr>
-              <th className="w-3/4">Customer</th>
+              <th className="w-3/4">Products</th>
               <th className="w-1/4">Pick</th>
             </tr>
           </thead>
@@ -62,11 +82,24 @@ const Product = () => {
             {data?.products.map((product) => (
               <tr key={product.id}>
                 <td className="text-xs">
-                  {product.name}{" "}
-                  <span className="font-medium">({product.price} TK)</span>
+                  <div className="flex items-center gap-2">
+                    <img className="w-8" src={product.img_url} alt="" />
+                    <span className="font-medium">
+                      {product.name} ({product.price} TK)
+                    </span>
+                  </div>
                 </td>
                 <td>
-                  <button className="btn btn-outline btn-xs">ADD</button>
+                  <button
+                    onClick={() => {
+                      document.getElementById("custom-modal").showModal();
+                      setTitle("Add Product");
+                      setSelectedProduct(product);
+                    }}
+                    className="btn btn-outline btn-xs"
+                  >
+                    ADD
+                  </button>
                 </td>
               </tr>
             ))}
@@ -115,6 +148,12 @@ const Product = () => {
           </button>
         </div>
       </div>
+      <CustomModal title={title}>
+        <AddProductForm
+          handleAddProduct={handleAddProduct}
+          selectedProduct={selectedProduct}
+        />
+      </CustomModal>
     </section>
   );
 };

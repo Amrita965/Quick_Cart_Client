@@ -1,8 +1,6 @@
-import { useState } from "react";
 import logo from "../../../../assets/logo/quick-cart-logo.png";
-import Customer from "./../../Customer/Customer";
 
-const Invoice = ({ customer }) => {
+const Invoice = ({ customer, selectedProducts }) => {
   const { id, name, email, mobile } = customer;
   return (
     <section className="bg-white m-3  p-3 md:p-5 shadow-md rounded-lg">
@@ -34,7 +32,6 @@ const Invoice = ({ customer }) => {
       <div className="divider"></div>
       <div className="overflow-x-auto">
         <table className="table">
-          {/* head */}
           <thead>
             <tr>
               <th>Name</th>
@@ -44,15 +41,16 @@ const Invoice = ({ customer }) => {
             </tr>
           </thead>
           <tbody>
-            {/* row 1 */}
-            <tr>
-              <th className="text-xs">1</th>
-              <td className="text-xs">Cy Ganderton</td>
-              <td className="text-xs">Quality Control Specialist</td>
-              <td className="text-xs">
-                <button className="btn btn-xs">Remove</button>
-              </td>
-            </tr>
+            {selectedProducts.map((selectedProduct, idx) => (
+              <tr key={idx}>
+                <td className="text-xs">{selectedProduct.name}</td>
+                <td className="text-xs">{selectedProduct.quantity}</td>
+                <td className="text-xs">{selectedProduct.total_price}</td>
+                <td className="text-xs">
+                  <button className="btn btn-xs">Remove</button>
+                </td>
+              </tr>
+            ))}
           </tbody>
         </table>
       </div>

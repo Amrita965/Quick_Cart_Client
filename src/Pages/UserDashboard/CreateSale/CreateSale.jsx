@@ -9,8 +9,8 @@ const CreateSale = () => {
 
     return (
         <div className="grid xl:grid-cols-2 2xl:grid-cols-3">
-            <Invoice customer={customer} />
-            <Product setSelectedProducts={setSelectedProducts} />
+            <Invoice selectedProducts={selectedProducts} customer={customer} />
+            <Product setSelectedProducts={setSelectedProducts} selectedProducts={selectedProducts} />
             <Customer setCustomer={setCustomer} />
         </div>
     );

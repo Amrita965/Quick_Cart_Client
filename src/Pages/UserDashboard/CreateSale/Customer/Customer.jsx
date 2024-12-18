@@ -59,7 +59,7 @@ const Customer = ({setCustomer}) => {
           {/* head */}
           <thead>
             <tr>
-              <th className="w-3/4">Customer</th>
+              <th className="w-3/4">Customers</th>
               <th className="w-1/4">Pick</th>
             </tr>
           </thead>
